@@ -29,7 +29,6 @@ export default function reducer(state = initialState, action = {}) {
     }
 
     case GET_POST_SUCCESS:
-      console.log(action.post);
       return {
         ...state,
         entities: {

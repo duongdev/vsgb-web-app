@@ -1,7 +1,5 @@
-import $ from 'jquery';
 import React from 'react';
 import PropTypes from 'prop-types';
-import Fade from 'material-ui/transitions/Fade';
 import { connect } from 'react-redux';
 
 import IconButton from 'material-ui/IconButton';
@@ -20,11 +18,16 @@ class PostView extends React.Component {
   };
 
   state = {
-    in: true
+    in: false
   }
 
   componentDidMount() {
     document.documentElement.style.overflow = 'hidden';
+
+    setTimeout(() => {
+      this.setState({ in: true })
+    }, 100)
+
     const { posts, match: { params: { postId } } } = this.props;
     const post = posts[postId];
 
@@ -40,6 +43,7 @@ class PostView extends React.Component {
   handleClose = () => {
     setTimeout(() => {
       this.setState({ in: false })
+      this.handleExit()
     }, 200);
     // this.props.history.goBack();
   }
@@ -58,52 +62,50 @@ class PostView extends React.Component {
     const post = posts[postId];
 
     return (
-      <Fade
-        in={this.state.in}
-        onExited={this.handleExit}
+      <div
+        style={{
+          position: 'fixed',
+          top: 0, left: 0, bottom: 0, right: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          zIndex: 9e9,
+          display: 'flex',
+          color: 'rgba(255, 255, 255, 0.7)',
+          padding: 16,
+          justifyContent: 'center',
+          transition: '.3s',
+          opacity: this.state.in ? 1 : 0
+        }}
+        onClick={this.handleClose}
       >
-        <div
+        <IconButton
           style={{
-            position: 'fixed',
-            top: 0, left: 0, bottom: 0, right: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            zIndex: 9e9,
-            display: 'flex',
-            color: 'rgba(255, 255, 255, 0.7)',
-            padding: 16,
-            justifyContent: 'center'
+            position: 'absolute',
+            top: 0,
+            right: 0
           }}
-          onClick={this.handleClose}
+          color="contrast"
+          // onClick={this.handleClose}
         >
-          <IconButton
-            style={{
-              position: 'absolute',
-              top: 0,
-              right: 0
-            }}
-            color="contrast"
-            // onClick={this.handleClose}
+          <CloseIcon />
+        </IconButton>
+        {post ?
+          <a
+            href={post.link}
+            target="_blank"
+            style={{ display: this.state.in ? 'block' : 'initial' }}
           >
-            <CloseIcon />
-          </IconButton>
-          {post ?
-            <a
-              href={post.link}
-              target="_blank"
-            >
-              <img
-                src={post.imageURL}
-                alt={post.actor.name}
-                onClick={e => e.stopPropagation()}
-                style={{
-                  width: 'auto',
-                  height: '100%'
-                }}
-              />
-            </a> :
-            <div style={{ margin: 'auto' }}><Spinner /></div>}
-        </div>
-      </Fade>
+            <img
+              src={post.imageURL}
+              alt={post.actor.name}
+              onClick={e => e.stopPropagation()}
+              style={{
+                width: 'auto',
+                height: '100%'
+              }}
+            />
+          </a> :
+          <div style={{ margin: 'auto' }}><Spinner /></div>}
+      </div>
     );
   }
 }
