@@ -5,6 +5,8 @@ import wrapDisplayName from 'recompose/wrapDisplayName';
 import createContext from 'styles/createContext';
 
 import 'typeface-roboto';
+import 'simplebar/dist/simplebar.css';
+import 'simplebar';
 
 // Apply some reset
 const styles = theme => {

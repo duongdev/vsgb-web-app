@@ -29,7 +29,7 @@ class MainContainer extends Component {
           />
           <Switch>
             <Route path="/sign-up" component={SignUp} />
-            <Route exact path="/" component={App} />
+            <Route path="/" component={App} />
             <Route component={NotFound} />
           </Switch>
         </div>

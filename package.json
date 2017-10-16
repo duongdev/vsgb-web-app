@@ -50,6 +50,7 @@
     "recompose": "^0.26.0",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
+    "simplebar": "^2.4.4",
     "store": "^2.0.12",
     "style-loader": "0.18.2",
     "sw-precache-webpack-plugin": "0.11.4",

@@ -1,13 +1,17 @@
+import $ from 'jquery';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import withStyles from 'material-ui/styles/withStyles';
 import Masonry from 'react-masonry-component';
 import Helmet from 'react-helmet';
+import {
+  Switch, Route
+} from 'react-router-dom';
 
 import Grid from 'material-ui/Grid';
 import Button from 'material-ui/Button';
-import { Spinner, PostListItem, Container } from 'components';
+import { Spinner, PostListItem, Container, PostView } from 'components';
 
 import { getPosts } from 'redux/modules/posts';
 
@@ -33,13 +37,15 @@ class App extends React.Component {
 
   componentDidMount() {
     this.props.getPosts();
+
+    $(document).scroll(this.handleScroll)
   }
 
   handleScroll = (e) => {
     const { isLoading } = this.props;
     if (isLoading) return;
 
-    const target = e.target;
+    const target = e.target.documentElement;
     const scrollBottom = target.scrollHeight - target.clientHeight - target.scrollTop
 
     if (scrollBottom <= 200) this.handleLoadMore()
@@ -53,9 +59,18 @@ class App extends React.Component {
     return (
       <div
         className={classes.app}
+        // data-simplebar
       >
+        <Switch>
+          <Route
+            path={`/post/:postId`}
+            component={PostView}
+            onEnter={() => console.log('enter')}
+          />
+        </Switch>
         <Helmet title="Girls" />
         <div
+          // data-simplebar
           className={classes.main}
           onScroll={this.handleScroll}
         >
@@ -90,14 +105,14 @@ class App extends React.Component {
 const styles = (theme) => {
   return {
     app: {
-      position: 'fixed',
+      // position: 'fixed',
       top: 0, left: 0, bottom: 0, right: 0,
       display: 'flex',
       flexDirection: 'column'
     },
     main: {
       flexGrow: 1,
-      overflow: 'auto'
+      overflow: 'hidden'
     }
   };
 }

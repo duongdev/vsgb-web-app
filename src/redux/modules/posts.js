@@ -1,6 +1,7 @@
 import { first } from 'lodash';
 const GET_POSTS = 'redux/posts/GET_POSTS';
 const GET_POSTS_SUCCESS = 'redux/posts/GET_POSTS_SUCCESS';
+const GET_POST_SUCCESS = 'redux/posts/GET_POST_SUCCESS';
 
 const initialState = {
   entities: {},
@@ -26,6 +27,17 @@ export default function reducer(state = initialState, action = {}) {
         next: first(Object.values(action.posts)).id
       };
     }
+
+    case GET_POST_SUCCESS:
+      console.log(action.post);
+      return {
+        ...state,
+        entities: {
+          ...state.entities,
+          [action.post.id]: action.post
+        }
+      };
+
     default: return state;
   }
 }
@@ -50,3 +62,15 @@ export const getPosts = (endAt, limit = 15) => (dispatch, getState, getFirebase)
   });
   return query;
 };
+
+export const getPost = postId => (dispatch, getState, getFirebase) => {
+  const firebase = getFirebase();
+  firebase.database().ref(`/VNsbGroup/${postId}`)
+  .once('value', (snapshot) => {
+    const post = snapshot.val();
+    dispatch({
+      type: GET_POST_SUCCESS,
+      post
+    })
+  });
+}

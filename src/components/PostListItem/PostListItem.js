@@ -2,10 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Paper from 'material-ui/Paper';
-import Avatar from 'material-ui/Avatar';
 import Grid from 'material-ui/Grid';
+import { Link } from 'react-router-dom';
+import Hidden from 'material-ui/Hidden';
 
 import { withStyles } from 'material-ui/styles';
+
+import ActorAndCaption from './components/ActorAndCaption';
 
 class PostListItem extends React.Component {
   static propTypes = {
@@ -35,43 +38,35 @@ class PostListItem extends React.Component {
           onMouseEnter={() => this.setState({ hover: true })}
           onMouseLeave={() => this.setState({ hover: false })}
         >
-          <img
-            className={classes.img}
-            src={post.imageURL}
-            alt={post.caption}
-          />
-          <div
-            className={classes.postContent}
-            style={{
-              opacity: hover ? 1 : 0
-            }}
-          >
-            <a
-              href={post.actor.link}
-              target="_blank"
+          <div style={{ position: 'relative' }}>
+            <Link
+              to={{
+                pathname: `/post/${post.id}`,
+                state: { fromHome: true }
+              }}
             >
-              <Avatar
-                src={post.actor.avatar}
+              <img
+                className={classes.img}
+                src={post.imageURL}
+                alt={post.actor.name}
               />
-            </a>
-            <div style={{
-              textAlign: 'left',
-              marginLeft: 10
-            }}>
-              <div style={{
-                marginBottom: 5,
-                fontWeight: 500
-              }}>
-                <a
-                  href={post.actor.link}
-                  target="_blank"
-                >{post.actor.name}</a>
-              </div>
-              <div style={{
-                lineHeight: 1.2
-              }}>{post.caption}</div>
-            </div>
+            </Link>
+            <Hidden smDown>
+              <ActorAndCaption
+                post={post}
+                classes={classes.postContent}
+                hover={hover}
+              />
+            </Hidden>
           </div>
+
+          <Hidden mdUp>
+            <ActorAndCaption
+              post={post}
+              classes={classes.postContentMobile}
+              hover
+            />
+          </Hidden>
         </Paper>
       </Grid>);
   }
@@ -112,7 +107,15 @@ const styles = theme => ({
     display: 'flex',
     padding: 10,
     opacity: 0,
-    transition: '.3s'
+    transition: '.3s',
+    maxHeight: '50%'
+  },
+
+  postContentMobile: {
+    maxHeight: 100,
+    display: 'flex',
+    padding: 10,
+    color: 'rgba(255, 255, 255, 0.7)',
   }
 });
 
