@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Avatar from 'material-ui/Avatar';
 
 const ActorAndCaption = ({ post, classes, hover }) => (

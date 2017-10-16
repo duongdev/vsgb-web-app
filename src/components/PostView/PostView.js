@@ -18,7 +18,8 @@ class PostView extends React.Component {
   };
 
   state = {
-    in: false
+    in: false,
+    fix: false
   }
 
   componentDidMount() {
@@ -26,7 +27,7 @@ class PostView extends React.Component {
 
     setTimeout(() => {
       this.setState({ in: true })
-    }, 100)
+    }, 100);
 
     const { posts, match: { params: { postId } } } = this.props;
     const post = posts[postId];
@@ -55,6 +56,12 @@ class PostView extends React.Component {
     } else {
       history.push('/');
     }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    setTimeout(() => {
+      this.setState({ in: true })
+    }, 100);
   }
 
   render() {
@@ -92,7 +99,7 @@ class PostView extends React.Component {
           <a
             href={post.link}
             target="_blank"
-            style={{ display: this.state.in ? 'block' : 'initial' }}
+            style={{ display: 'inline-flex' }}
           >
             <img
               src={post.imageURL}
@@ -100,7 +107,7 @@ class PostView extends React.Component {
               onClick={e => e.stopPropagation()}
               style={{
                 width: 'auto',
-                height: '100%'
+                height: this.state.in ? '100%' : 'inherit'
               }}
             />
           </a> :
