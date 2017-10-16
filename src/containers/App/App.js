@@ -11,7 +11,7 @@ import {
 
 import Grid from 'material-ui/Grid';
 import Button from 'material-ui/Button';
-import { Spinner, PostListItem, Container, PostView } from 'components';
+import { Spinner, PostListItem, Container, PostView, AppBar } from 'components';
 
 import { getPosts } from 'redux/modules/posts';
 
@@ -61,6 +61,7 @@ class App extends React.Component {
         className={classes.app}
         // data-simplebar
       >
+        <AppBar />
         <Switch>
           <Route
             path={`/post/:postId`}
@@ -105,10 +106,10 @@ class App extends React.Component {
 const styles = (theme) => {
   return {
     app: {
-      // position: 'fixed',
       top: 0, left: 0, bottom: 0, right: 0,
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
+      paddingTop: 84
     },
     main: {
       flexGrow: 1,

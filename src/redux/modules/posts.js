@@ -24,7 +24,7 @@ export default function reducer(state = initialState, action = {}) {
           ...state.entities,
           ...action.posts
         },
-        next: first(Object.values(action.posts)).id
+        next: first(Object.values(action.posts)).timestamp
       };
     }
 
@@ -47,7 +47,7 @@ export const getPosts = (endAt, limit = 15) => (dispatch, getState, getFirebase)
 
   const firebase = getFirebase();
   let query = firebase.database().ref(`/VNsbGroup`)
-  .orderByChild('id');
+  .orderByChild('timestamp');
 
   if (endAt) {
     query = query.endAt(endAt);

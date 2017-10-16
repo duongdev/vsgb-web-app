@@ -70,32 +70,37 @@ class PostView extends React.Component {
             zIndex: 9e9,
             display: 'flex',
             color: 'rgba(255, 255, 255, 0.7)',
-            padding: 16
+            padding: 16,
+            justifyContent: 'center'
           }}
-          onKeyDown={e => console.log(e.keyCode)}
+          onClick={this.handleClose}
         >
+          <IconButton
+            style={{
+              position: 'absolute',
+              top: 0,
+              right: 0
+            }}
+            color="contrast"
+            // onClick={this.handleClose}
+          >
+            <CloseIcon />
+          </IconButton>
           {post ?
-            <div style={{
-              flexGrow: 1, display: 'flex',
-              backgroundImage: `url(${post.imageURL})`,
-              backgroundSize: 'contain',
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'center',
-              padding: 16,
-              position: 'relative'
-            }}>
-              <IconButton
+            <a
+              href={post.link}
+              target="_blank"
+            >
+              <img
+                src={post.imageURL}
+                alt={post.actor.name}
+                onClick={e => e.stopPropagation()}
                 style={{
-                  position: 'absolute',
-                  right: -16,
-                  top: -16
+                  width: 'auto',
+                  height: '100%'
                 }}
-                color="contrast"
-                onClick={this.handleClose}
-              >
-                <CloseIcon />
-              </IconButton>
-            </div> :
+              />
+            </a> :
             <div style={{ margin: 'auto' }}><Spinner /></div>}
         </div>
       </Fade>
