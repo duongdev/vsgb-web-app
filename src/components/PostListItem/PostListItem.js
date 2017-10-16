@@ -40,18 +40,33 @@ class PostListItem extends React.Component {
           onMouseLeave={() => this.setState({ hover: false })}
         >
           <div style={{ position: 'relative' }}>
-            <Link
-              to={{
-                pathname: `/post/${post.id}`,
-                state: { fromHome: true }
-              }}
-            >
-              <img
-                className={classes.img}
-                src={post.imageURL}
-                alt={post.actor.name}
-              />
-            </Link>
+            <Hidden smDown>
+              <Link
+                to={{
+                  pathname: `/post/${post.id}`,
+                  state: { fromHome: true }
+                }}
+              >
+                <img
+                  className={classes.img}
+                  src={post.imageURL}
+                  alt={post.actor.name}
+                />
+              </Link>
+            </Hidden>
+            <Hidden mdUp>
+              <Link
+                to={post.link}
+                target="_blank"
+              >
+                <img
+                  className={classes.img}
+                  src={post.imageURL}
+                  alt={post.actor.name}
+                />
+              </Link>
+            </Hidden>
+
             <Hidden smDown>
               <ActorAndCaption
                 post={post}

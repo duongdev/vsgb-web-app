@@ -77,7 +77,7 @@ class App extends React.Component {
         >
           <Container>
             <Masonry
-              updateOnEachImageLoad={true}
+              updateOnEachImageLoad={false}
             >
               {Object.values(posts).map(post => (
                 <PostListItem
