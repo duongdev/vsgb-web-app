@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import withStyles from 'material-ui/styles/withStyles';
 import Masonry from 'react-masonry-component';
+import Helmet from 'react-helmet';
 
 import Grid from 'material-ui/Grid';
 import Button from 'material-ui/Button';
@@ -53,6 +54,7 @@ class App extends React.Component {
       <div
         className={classes.app}
       >
+        <Helmet title="Girls" />
         <div
           className={classes.main}
           onScroll={this.handleScroll}
@@ -79,9 +81,6 @@ class App extends React.Component {
               </div>
             }
           </Container>
-        </div>
-        <div>
-          Bottom
         </div>
       </div>
     );

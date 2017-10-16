@@ -24,7 +24,7 @@ class MainContainer extends Component {
       <Router>
         <div>
           <Helmet
-            titleTemplate="%s"
+            titleTemplate="%s – vsbg.duongdev.me"
             defaultTitle="Home"
           />
           <Switch>
