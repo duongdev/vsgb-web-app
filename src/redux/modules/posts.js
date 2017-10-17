@@ -1,4 +1,4 @@
-import { first } from 'lodash';
+import { toArray, minBy } from 'lodash';
 const GET_POSTS = 'redux/posts/GET_POSTS';
 const GET_POSTS_SUCCESS = 'redux/posts/GET_POSTS_SUCCESS';
 const GET_POST_SUCCESS = 'redux/posts/GET_POST_SUCCESS';
@@ -24,7 +24,8 @@ export default function reducer(state = initialState, action = {}) {
           ...state.entities,
           ...action.posts
         },
-        next: first(Object.values(action.posts)).id
+        // next: Object.values(action.posts)[1] && Object.values(action.posts)[1].timestamp.toString()
+        next: findNext({...action.posts, ...state.entities})
       };
     }
 
@@ -46,10 +47,10 @@ export const getPosts = (endAt, limit = 15) => (dispatch, getState, getFirebase)
 
   const firebase = getFirebase();
   let query = firebase.database().ref(`/VNsbGroup`)
-  .orderByChild('id');
+  .orderByChild('timestamp');
 
   if (endAt) {
-    query = query.endAt(endAt);
+    query = query.endAt(endAt.toString());
   }
   query = query.limitToLast(limit)
   .once('value', (snapshot) => {
@@ -59,6 +60,7 @@ export const getPosts = (endAt, limit = 15) => (dispatch, getState, getFirebase)
       posts
     })
   });
+  console.log(endAt, limit)
   return query;
 };
 
@@ -73,3 +75,8 @@ export const getPost = postId => (dispatch, getState, getFirebase) => {
     })
   });
 }
+
+const findNext = (posts) => {
+  // console.log(toArray(posts));
+  return minBy(toArray(posts), 'timestamp').timestamp.toString();
+};
