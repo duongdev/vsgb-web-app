@@ -51,7 +51,20 @@ class App extends React.Component {
     if (scrollBottom <= 200) this.handleLoadMore()
   }
 
-  handleLoadMore = () => this.props.getPosts(this.props.next)
+  handleLoadMore = () => {
+    if (!this.state.canLoadMore) return;
+    this.props.getPosts(this.props.next);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { isLoading } = nextProps;
+    if (!this.props.isLoading && nextProps.isLoading) {
+      this.setState({ canLoadMore: false });
+    }
+    if (this.props.isLoading && !isLoading) {
+      setTimeout(() => this.setState({ canLoadMore: true }), 1000);
+    }
+  }
 
   render() {
     const { posts, isLoading, classes } = this.props;
@@ -66,7 +79,6 @@ class App extends React.Component {
           <Route
             path={`/post/:postId`}
             component={PostView}
-            onEnter={() => console.log('enter')}
           />
         </Switch>
         <Helmet title="Girls" />
