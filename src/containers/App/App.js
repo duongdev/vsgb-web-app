@@ -1,3 +1,4 @@
+import moment from 'moment';
 import $ from 'jquery';
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -11,7 +12,7 @@ import {
 
 import Grid from 'material-ui/Grid';
 import Button from 'material-ui/Button';
-import { Spinner, PostListItem, Container, PostView, AppBar } from 'components';
+import { Spinner, PostListItem, Container, PostView, AppBar, NewPostsAvailable } from 'components';
 
 import { getPosts } from 'redux/modules/posts';
 
@@ -26,7 +27,7 @@ class App extends React.Component {
     classes: PropTypes.instanceOf(Object).isRequired,
     posts: PropTypes.instanceOf(Object),
     isLoading: PropTypes.bool,
-    next: PropTypes.string
+    next: PropTypes.number
   };
   static defaultProps = {
     posts: {},
@@ -43,7 +44,7 @@ class App extends React.Component {
 
   handleScroll = (e) => {
     const { isLoading } = this.props;
-    if (isLoading) return;
+    if (isLoading || !e.target.documentElement) return;
 
     const target = e.target.documentElement;
     const scrollBottom = target.scrollHeight - target.clientHeight - target.scrollTop
@@ -75,6 +76,7 @@ class App extends React.Component {
         // data-simplebar
       >
         <AppBar />
+        <NewPostsAvailable />
         <Switch>
           <Route
             path={`/post/:postId`}

@@ -24,7 +24,6 @@ export default function reducer(state = initialState, action = {}) {
           ...state.entities,
           ...action.posts
         },
-        // next: Object.values(action.posts)[1] && Object.values(action.posts)[1].timestamp.toString()
         next: findNext({...action.posts, ...state.entities})
       };
     }
@@ -50,7 +49,7 @@ export const getPosts = (endAt, limit = 15) => (dispatch, getState, getFirebase)
   .orderByChild('timestamp');
 
   if (endAt) {
-    query = query.endAt(endAt.toString());
+    query = query.endAt(endAt * 1);
   }
   query = query.limitToLast(limit)
   .once('value', (snapshot) => {
@@ -78,5 +77,5 @@ export const getPost = postId => (dispatch, getState, getFirebase) => {
 const findNext = (posts) => {
   const lastPost = minBy(toArray(posts), 'timestamp');
   if (!lastPost) return null;
-  return lastPost.timestamp.toString()
+  return lastPost.timestamp;
 };
