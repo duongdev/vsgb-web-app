@@ -1,11 +1,18 @@
-import { toArray, minBy } from 'lodash';
+import { toArray, minBy, maxBy, size } from 'lodash';
 const GET_POSTS = 'redux/posts/GET_POSTS';
 const GET_POSTS_SUCCESS = 'redux/posts/GET_POSTS_SUCCESS';
 const GET_POST_SUCCESS = 'redux/posts/GET_POST_SUCCESS';
 
+const REAL_TIME_UPDATED = 'redux/posts/REAL_TIME_UPDATED';
+const APPEND_PENDING_POSTS = 'redux/posts/APPEND_PENDING_POSTS';
+const RT_MODE_UPDATED = 'redux/posts/RT_MODE_UPDATED';
+
 const initialState = {
   entities: {},
-  next: null
+  pendingPosts: {},
+  pendingPostsCount: 0,
+  next: null,
+  RTMode: true
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -35,6 +42,30 @@ export default function reducer(state = initialState, action = {}) {
           ...state.entities,
           [action.post.id]: action.post
         }
+      };
+
+    case REAL_TIME_UPDATED:
+      return {
+        ...state,
+        pendingPosts: action.posts,
+        pendingPostsCount: Object.keys(action.posts).length
+      };
+
+    case APPEND_PENDING_POSTS:
+      return {
+        ...state,
+        entities: {
+          ...state.entities,
+          ...state.pendingPosts
+        },
+        pendingPosts: {},
+        pendingPostsCount: 0
+      };
+
+    case RT_MODE_UPDATED:
+      return {
+        ...state,
+        RTMode: action.RTMode
       };
 
     default: return state;
@@ -73,6 +104,37 @@ export const getPost = postId => (dispatch, getState, getFirebase) => {
     })
   });
 }
+
+export const subscribeNewPosts = () => (dispatch, getState, getFirebase) => {
+  const firebase = getFirebase();
+  const firstPost = maxBy(toArray(getState().posts.entities), 'timestamp');
+
+  const ref = firebase.database().ref(`/all`);
+
+  ref.orderByChild('timestamp')
+  .startAt(firstPost.timestamp)
+  .on('value', snapshot => {
+    const newPosts = snapshot.val();
+    const pendingPosts = getState().posts.pendingPosts;
+    const RTMode = getState().posts.RTMode;
+
+    if (newPosts[firstPost.id]) delete newPosts[firstPost.id];
+
+    if (size(newPosts) === size(pendingPosts)) return;
+
+    if (RTMode) dispatch({ type: GET_POSTS_SUCCESS, posts: newPosts });
+    else dispatch({ type: REAL_TIME_UPDATED, posts: newPosts });
+    // dispatch({ type: GET_POST_SUCCESS, post: toArray(newPosts)[0] });
+
+    ref.off();
+    dispatch(subscribeNewPosts());
+  });
+  return ref;
+};
+
+export const appendPendingPosts = () => ({ type: APPEND_PENDING_POSTS });
+
+export const setRTMode = RTMode => ({ type: RT_MODE_UPDATED, RTMode });
 
 const findNext = (posts) => {
   const lastPost = minBy(toArray(posts), 'timestamp');

@@ -11,6 +11,9 @@ import { reactReduxFirebase, getFirebase } from 'react-redux-firebase';
 
 import reducers from 'redux/modules/reducers';
 
+import 'jquery';
+import 'assets/jquery-ui.min.js'
+
 // import registerServiceWorker from './registerServiceWorker';
 
 const fireBaseConfig = {

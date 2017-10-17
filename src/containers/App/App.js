@@ -1,5 +1,5 @@
-import moment from 'moment';
 import $ from 'jquery';
+import { sortBy, toArray } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -9,25 +9,32 @@ import Helmet from 'react-helmet';
 import {
   Switch, Route
 } from 'react-router-dom';
+import withWidth from 'material-ui/utils/withWidth';
+import compose from 'recompose/compose';
 
 import Grid from 'material-ui/Grid';
 import Button from 'material-ui/Button';
-import { Spinner, PostListItem, Container, PostView, AppBar, NewPostsAvailable } from 'components';
+import { Spinner, PostListItem, Container, PostView, AppBar } from 'components';
 
-import { getPosts } from 'redux/modules/posts';
+import { getPosts, subscribeNewPosts, setRTMode } from 'redux/modules/posts';
 
 @connect(state => ({
   posts: state.posts.entities,
   isLoading: state.posts.isLoading,
   next: state.posts.next
-}), { getPosts })
+}), { getPosts, subscribeNewPosts, setRTMode })
 
 class App extends React.Component {
   static propTypes = {
+    getPosts: PropTypes.func.isRequired,
+    subscribeNewPosts: PropTypes.func.isRequired,
+    setRTMode: PropTypes.func.isRequired,
+
     classes: PropTypes.instanceOf(Object).isRequired,
+    width: PropTypes.string.isRequired,
     posts: PropTypes.instanceOf(Object),
     isLoading: PropTypes.bool,
-    next: PropTypes.number
+    next: PropTypes.number,
   };
   static defaultProps = {
     posts: {},
@@ -37,17 +44,24 @@ class App extends React.Component {
   state = {}
 
   componentDidMount() {
-    this.props.getPosts();
+    const { width } = this.props;
 
-    $(document).scroll(this.handleScroll)
+    this.props.getPosts()
+    .then(this.props.subscribeNewPosts);
+
+    if (width === 'xs' || width === 'sm') this.props.setRTMode(false);
+    $(document).scroll(this.handleScroll);
   }
 
   handleScroll = (e) => {
+    const { width } = this.props;
     const { isLoading } = this.props;
     if (isLoading || !e.target.documentElement) return;
 
     const target = e.target.documentElement;
     const scrollBottom = target.scrollHeight - target.clientHeight - target.scrollTop
+
+    if (!(width === 'xs' || width === 'sm')) this.props.setRTMode(target.scrollTop === 0);
 
     if (scrollBottom <= 200) this.handleLoadMore()
   }
@@ -73,10 +87,8 @@ class App extends React.Component {
     return (
       <div
         className={classes.app}
-        // data-simplebar
       >
         <AppBar />
-        <NewPostsAvailable />
         <Switch>
           <Route
             path={`/post/:postId`}
@@ -85,7 +97,6 @@ class App extends React.Component {
         </Switch>
         <Helmet title="Girls" />
         <div
-          // data-simplebar
           className={classes.main}
           onScroll={this.handleScroll}
         >
@@ -93,7 +104,7 @@ class App extends React.Component {
             <Masonry
               updateOnEachImageLoad={false}
             >
-              {Object.values(posts).map(post => (
+              {sortBy(toArray(posts), 'timestamp').reverse().map(post => (
                 <PostListItem
                   key={post.id}
                   post={post}
@@ -123,7 +134,8 @@ const styles = (theme) => {
       top: 0, left: 0, bottom: 0, right: 0,
       display: 'flex',
       flexDirection: 'column',
-      paddingTop: 84
+      paddingTop: 84,
+      position: 'relative'
     },
     main: {
       flexGrow: 1,
@@ -132,4 +144,4 @@ const styles = (theme) => {
   };
 }
 
-export default withStyles(styles)(App);
+export default compose(withStyles(styles), withWidth())(App);
