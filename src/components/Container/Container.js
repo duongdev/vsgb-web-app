@@ -9,7 +9,7 @@ const Container = ({ width, styles, ...props }) => {
 
   switch (width) {
     case 'xs': { widthPx = '100%'; break; }
-    case 'sm': { widthPx = 600; break; }
+    case 'sm': { widthPx = '100%'; break; }
     case 'md': { widthPx = 960; break; }
     case 'lg': { widthPx = 1280; break; }
     default: { widthPx = 1900; break; }
