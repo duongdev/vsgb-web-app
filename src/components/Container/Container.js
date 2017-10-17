@@ -5,15 +5,15 @@ import withStyles from 'material-ui/styles/withStyles';
 import compose from 'recompose/compose';
 
 const Container = ({ width, styles, ...props }) => {
-  let widthPx = 0;
+  let widthPx = '100%';
 
-  switch (width) {
-    case 'xs': { widthPx = '100%'; break; }
-    case 'sm': { widthPx = '100%'; break; }
-    case 'md': { widthPx = 960; break; }
-    case 'lg': { widthPx = 1280; break; }
-    default: { widthPx = 1900; break; }
-  }
+  // switch (width) {
+  //   case 'xs': { widthPx = '100%'; break; }
+  //   case 'sm': { widthPx = '100%'; break; }
+  //   case 'md': { widthPx = 960; break; }
+  //   case 'lg': { widthPx = 1280; break; }
+  //   default: { widthPx = 1900; break; }
+  // }
 
   return (
     <div
