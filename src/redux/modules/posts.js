@@ -46,7 +46,7 @@ export const getPosts = (endAt, limit = 15) => (dispatch, getState, getFirebase)
   dispatch({ type: GET_POSTS });
 
   const firebase = getFirebase();
-  let query = firebase.database().ref(`/VNsbGroup`)
+  let query = firebase.database().ref(`/all`)
   .orderByChild('timestamp');
 
   if (endAt) {
@@ -60,13 +60,12 @@ export const getPosts = (endAt, limit = 15) => (dispatch, getState, getFirebase)
       posts
     })
   });
-  console.log(endAt, limit)
   return query;
 };
 
 export const getPost = postId => (dispatch, getState, getFirebase) => {
   const firebase = getFirebase();
-  firebase.database().ref(`/VNsbGroup/${postId}`)
+  firebase.database().ref(`/all/${postId}`)
   .once('value', (snapshot) => {
     const post = snapshot.val();
     dispatch({
@@ -77,6 +76,7 @@ export const getPost = postId => (dispatch, getState, getFirebase) => {
 }
 
 const findNext = (posts) => {
-  // console.log(toArray(posts));
-  return minBy(toArray(posts), 'timestamp').timestamp.toString();
+  const lastPost = minBy(toArray(posts), 'timestamp');
+  if (!lastPost) return null;
+  return lastPost.timestamp.toString()
 };
