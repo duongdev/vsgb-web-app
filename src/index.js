@@ -11,7 +11,7 @@ import { reactReduxFirebase, getFirebase } from 'react-redux-firebase';
 
 import reducers from 'redux/modules/reducers';
 
-import registerServiceWorker from './registerServiceWorker';
+// import registerServiceWorker from './registerServiceWorker';
 
 const fireBaseConfig = {
   apiKey: "AIzaSyCQp_PfjcZ5hHfGCD0uWeN7uamuzMnhWig",
@@ -68,4 +68,4 @@ if (module.hot) {
   });
 }
 
-registerServiceWorker();
+// registerServiceWorker();
