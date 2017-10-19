@@ -35,7 +35,7 @@ const ActorAndCaption = ({ post, classes, hover }) => (
       <div data-simplebar style={{
         lineHeight: 1.2,
         overflow: 'hidden'
-      }}>{post.caption}</div>
+      }}>{post.caption.replace('See Translation', '').trim()}</div>
     </div>
   </div>);
 
